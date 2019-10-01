@@ -2,7 +2,9 @@ import json
 import time
 import logging
 from datetime import datetime
-from metrics import METRICS
+
+from raindrop.config import config
+from raindrop.metrics import get_metric_collectors
 
 
 logger = logging.getLogger(__name__)
@@ -11,17 +13,19 @@ logger = logging.getLogger(__name__)
 def collect_metrics():
     metadata = {"machine_id": "random@hostname"}
 
-    for metric in METRICS:
-        logger.debug("Collecting %s", metric.key)
+    collectors = get_metric_collectors(config)
+
+    for collector in collectors:
+        logger.debug("Collecting %s", collector.key)
 
         try:
-            collected_value = metric.collect()
+            collected_value = collector.collect()
         except Exception as err:
             logger.exception(err)
             continue
 
         message = {
-            "key": metric.key,
+            "key": collector.key,
             "value": collected_value,
             "now": datetime.utcnow().isoformat(),
             **metadata,

@@ -1,14 +1,24 @@
-class BaseMetric:
+class MetricCollector:
     """
-    Base metric class
+    Base metric collector class.
 
     All metric classes should subclass this class and implement the
     `collect` method. The `collect` should contain the actual logic
     that gets the metric from the OS.
+
+    The module that contain your subclasses should be registered in
+    the config file so that it can be discovered.
+
+    ```
+    metrics_modules = [
+        ...,
+        "path.to.your.metrics_module",
+    ]
+    ```
+
     """
 
     key: str
-    description: str
 
     def collect(self):
         """

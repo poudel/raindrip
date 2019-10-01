@@ -2,10 +2,10 @@ from datetime import datetime
 
 import psutil
 
-from metrics.base import BaseMetric
+from raindrop.metrics.base import MetricCollector
 
 
-class BootTime(BaseMetric):
+class BootTime(MetricCollector):
     key = "boot_time"
 
     def collect(self):
@@ -14,18 +14,15 @@ class BootTime(BaseMetric):
         return {"when": boot_time.isoformat(), "uptime": uptime}
 
 
-class NumProcesses(BaseMetric):
+class NumProcesses(MetricCollector):
     key = "number_of_processes"
 
     def collect(self):
         return len(psutil.pids())
 
 
-class NumUsers(BaseMetric):
+class NumUsers(MetricCollector):
     key = "number_of_users"
 
     def collect(self):
         return len(psutil.users())
-
-
-METRICS = [BootTime(), NumProcesses(), NumUsers()]
