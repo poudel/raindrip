@@ -1,12 +1,11 @@
 import json
 import psycopg2
 from psycopg2.extras import Json, execute_values
-from raindrop.kafka_utils import kafka
 
 
 class MessageHandler:
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, app):
+        self.app = app
         self._connection = None
 
     @property
@@ -14,7 +13,7 @@ class MessageHandler:
         if self._connection:
             return self._connection
 
-        self._connection = psycopg2.connect(self.config.PG_URI)
+        self._connection = psycopg2.connect(self.app.config.PG_URI)
         return self._connection
 
     def before(self):
@@ -56,6 +55,6 @@ class MessageHandler:
         return values
 
     def poll(self):
-        topic_messages = kafka.consumer.poll(timeout_ms=1000)
+        topic_messages = self.app.kafka_consumer.poll(timeout_ms=1000)
         for _, messages in topic_messages.items():
             self.on_messages(messages)

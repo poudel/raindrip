@@ -1,33 +1,38 @@
+import logging
 from kafka import KafkaProducer, KafkaConsumer
-from raindrop.config import config
 
 
-class KafkaProxy:
+class App:
+
     def __init__(self, config):
         self.config = config
-        self._producer = None
-        self._consumer = None
+
+        logging.basicConfig(level=config.LOGLEVEL)
+        self.logger = logging.getLogger("raindrop")
+
+        self._kafka_producer = None
+        self._kafka_consumer = None
 
     @property
-    def producer(self):
-        if self._producer is not None:
-            return self._producer
+    def kafka_producer(self):
+        if self._kafka_producer is not None:
+            return self._kafka_producer
 
-        self._producer = KafkaProducer(
+        self._kafka_producer = KafkaProducer(
             bootstrap_servers=self.config.KAFKA_URI,
             security_protocol="SSL",
             ssl_cafile=self.config.KAFKA_SSL_CAFILE,
             ssl_certfile=self.config.KAFKA_SSL_CERTFILE,
             ssl_keyfile=self.config.KAFKA_SSL_KEYFILE,
         )
-        return self._producer
+        return self._kafka_producer
 
     @property
-    def consumer(self):
-        if self._consumer is not None:
-            return self._consumer
+    def kafka_consumer(self):
+        if self._kafka_consumer is not None:
+            return self._kafka_consumer
 
-        self._consumer = KafkaConsumer(
+        self._kafka_consumer = KafkaConsumer(
             self.config.KAFKA_TOPIC,
             auto_offset_reset="earliest",
             bootstrap_servers=self.config.KAFKA_URI,
@@ -38,7 +43,4 @@ class KafkaProxy:
             ssl_certfile=self.config.KAFKA_SSL_CERTFILE,
             ssl_keyfile=self.config.KAFKA_SSL_KEYFILE,
         )
-        return self._consumer
-
-
-kafka = KafkaProxy(config)
+        return self._kafka_consumer

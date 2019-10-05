@@ -9,15 +9,11 @@ from raindrop.metrics.base import MetricCollector
 logger = logging.getLogger(__name__)
 
 
-def get_metric_collectors(config):
-    for module_name in config.METRICS_MODULES:
+def collect_metrics(metrics_modules):
+    for module_name in metrics_modules:
         import_module(module_name)
 
-    return [collector() for collector in MetricCollector.__subclasses__()]
-
-
-def collect_metrics(config):
-    collectors = get_metric_collectors(config)
+    collectors = [collector() for collector in MetricCollector.__subclasses__()]
 
     for collector in collectors:
         try:

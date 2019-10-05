@@ -1,19 +1,27 @@
+from raindrop.config import config
+from raindrop.app import App
 from raindrop.message_handlers import MessageHandler
 
 
-def consume_messages(config):
-    handler = MessageHandler(config)
+def consume_messages(app):
+    handler = MessageHandler(app)
     handler.before()
 
+    app.logger.info("Started continuous polling...")
+
     while True:
-        print("Polling...")
         try:
             handler.poll()
         except KeyboardInterrupt:
-            print("Exiting consumer...")
+            app.logger.info("Exiting consumer...")
             break
         except Exception:
-            print(f"Exiting consumer because of error")
+            app.logger.error(f"Exiting consumer because of error")
             raise
 
     handler.after()
+
+
+if __name__ == "__main__":
+    app = App(config)
+    consume_messages(app)

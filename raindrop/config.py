@@ -14,6 +14,7 @@ class Config:
     METRICS_MODULES = ["metrics.hardware", "metrics.network", "metrics.system"]
 
     MACHINE_ID = env("RAIN_MACHINE_ID", "random@machine")
+    LOGLEVEL = env("RAIN_LOGLEVEL", "INFO").upper()
 
     KAFKA_URI = env("RAIN_KAFKA_URI")
     KAFKA_SSL_CAFILE = env("RAIN_KAFKA_SSL_CAFILE")
