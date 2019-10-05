@@ -1,28 +1,35 @@
-class BaseConsumer:
+import json
+import time
+from raindrop.kafka_utils import kafka
 
-    def __init__(self, config, *args, **kwargs):
+
+class MessageHandler:
+
+    def __init__(self, config):
         self.config = config
 
-    def start(self):
-        """
-        Should basically ready the consumer to consume messages. Could
-        be something like establishing connection to another service.
-        """
+    def on_message(self):
         pass
 
-    def stop(self):
-        """
-        To cleanup if there is anything to clean up before destroying.
-        """
-        pass
 
-    def on_message(self, message):
-        raise NotImplementedError
+def read_message(message):
+    try:
+        print(json.loads(message.value.decode("utf-8")))
+    except json.JSONDecodeError as err:
+        print(f"Could not decode: {message.value}\n {err}")
 
 
-class WriteToPostgresConsumer(BaseConsumer):
+if __name__ == "__main__":
+    print("Polling...")
 
-    def on_message(self, message):
-        # vaidate jsonschema
-        # use the connection to write to the db
-        pass
+    while True:
+        try:
+            topic_messages = kafka.consumer.poll(timeout_ms=1000)
+            for topic, messages in topic_messages.items():
+                for message in messages:
+                    read_message(message)
+
+            time.sleep(3)
+        except KeyboardInterrupt:
+            print("Exiting raindrop consumer...")
+            break

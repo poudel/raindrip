@@ -11,15 +11,18 @@ def env(name, default=None):
 
 
 class BaseConfig:
-    metrics_modules = ["metrics.hardware", "metrics.network", "metrics.system"]
+    METRICS_MODULES = ["metrics.hardware", "metrics.network", "metrics.system"]
 
-    machine_id = env("RAIN_MACHINE_ID", "random@machine")
+    MACHINE_ID = env("RAIN_MACHINE_ID", "random@machine")
 
-    kafka_uri = env("RAIN_KAFKA_URI")
-    kafka_ssl_ca_file = env("RAIN_KAFKA_SSL_CA_FILE")
-    kafka_ssl_cert_file = env("RAIN_KAFKA_SSL_CERT_FILE")
-    kafka_ssl_key_file = env("RAIN_KAFKA_SSL_KEY_FILE")
-    kafka_topic = env("RAIN_KAFKA_TOPIC")
+    KAFKA_URI = env("RAIN_KAFKA_URI")
+    KAFKA_SSL_CAFILE = env("RAIN_KAFKA_SSL_CAFILE")
+    KAFKA_SSL_CERTFILE = env("RAIN_KAFKA_SSL_CERTFILE")
+    KAFKA_SSL_KEYFILE = env("RAIN_KAFKA_SSL_KEYFILE")
+
+    KAFKA_TOPIC = env("RAIN_KAFKA_TOPIC")
+    KAFKA_CLIENT_ID = env("RAIN_KAFKA_CLIENT_ID", "raindrop-client")
+    KAFKA_GROUP_ID = env("RAIN_KAFKA_GROUP_ID", "raindrop-group")
 
 
 config = BaseConfig()
