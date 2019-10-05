@@ -2,7 +2,7 @@ from datetime import datetime
 
 import psutil
 
-from raindrop.metrics.base import MetricCollector
+from metrics.base import MetricCollector
 
 
 class BootTime(MetricCollector):
@@ -10,6 +10,8 @@ class BootTime(MetricCollector):
 
     def collect(self):
         boot_time = datetime.fromtimestamp(psutil.boot_time())
+
+        # needs to be .now() because we're comparing local time
         uptime = (datetime.now() - boot_time).total_seconds()
         return {"when": boot_time.isoformat(), "uptime": uptime}
 

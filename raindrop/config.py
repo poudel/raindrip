@@ -2,6 +2,10 @@ import os
 
 
 def env(name, default=None):
+    """
+    This function makes sure that we don't load the config unless all
+    required environment variables are provided.
+    """
     value = os.environ.get(name)
 
     if value is None and default is None:

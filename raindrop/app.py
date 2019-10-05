@@ -1,4 +1,5 @@
 import logging
+import psycopg2
 from kafka import KafkaProducer, KafkaConsumer
 
 
@@ -12,6 +13,15 @@ class App:
 
         self._kafka_producer = None
         self._kafka_consumer = None
+        self._pg_connection = None
+
+    @property
+    def pg_connection(self):
+        if self._pg_connection:
+            return self._pg_connection
+
+        self._pg_connection = psycopg2.connect(self.config.PG_URI)
+        return self._pg_connection
 
     @property
     def kafka_producer(self):
@@ -44,3 +54,19 @@ class App:
             ssl_keyfile=self.config.KAFKA_SSL_KEYFILE,
         )
         return self._kafka_consumer
+
+    def cleanup(self):
+        """
+        Close producer, consumer and database connections.
+        """
+        if self._kafka_producer:
+            self._kafka_producer.close()
+            self._kafka_producer = None
+
+        if self._kafka_consumer:
+            self._kafka_consumer.close()
+            self._kafka_consumer = None
+
+        if self._pg_connection:
+            self._pg_connection.close()
+            self._pg_connection = None

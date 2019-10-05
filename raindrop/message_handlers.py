@@ -1,22 +1,17 @@
 import json
-import psycopg2
 from psycopg2.extras import Json, execute_values
 
 
-class MessageHandler:
+class MessageListener:
+
     def __init__(self, app):
         self.app = app
-        self._connection = None
+        self.setup()
 
-    @property
-    def connection(self):
-        if self._connection:
-            return self._connection
-
-        self._connection = psycopg2.connect(self.app.config.PG_URI)
-        return self._connection
-
-    def before(self):
+    def setup(self):
+        """
+        Create the necessary PostgreSQL table where to save metrics later.
+        """
         query = """
         CREATE TABLE IF NOT EXISTS metrics(
             machine_id text,
@@ -26,26 +21,29 @@ class MessageHandler:
         );
         """
 
-        with self.connection.cursor() as cursor:
+        with self.app.pg_connection.cursor() as cursor:
             cursor.execute(query)
 
-        self.connection.commit()
-
-    def after(self):
-        if self._connection:
-            self._connection.close()
-            self._connection = None
+        self.app.pg_connection.commit()
 
     def on_messages(self, messages):
+        """
+        This method, when called with a list of messages, does a bulk insert into the
+        PostgreSQL database.
+        """
         query = "INSERT INTO metrics(machine_id, timestamp, key, value) VALUES %s"
         values = self._prepare_sql_values(messages)
 
-        with self.connection.cursor() as cursor:
+        with self.app.pg_connection.cursor() as cursor:
             execute_values(cursor, query, values)
 
-        self.connection.commit()
+        self.app.pg_connection.commit()
 
     def _prepare_sql_values(self, messages):
+        """
+        Parse the received messages and convert them to parameters for
+        the INSERT query.
+        """
         parsed_messages = [json.loads(message.value.decode("utf-8")) for message in messages]
 
         values = [
@@ -55,6 +53,9 @@ class MessageHandler:
         return values
 
     def poll(self):
-        topic_messages = self.app.kafka_consumer.poll(timeout_ms=1000)
+        """
+        polls the kafka server for new messages
+        """
+        topic_messages = self.app.kafka_consumer.poll()
         for _, messages in topic_messages.items():
             self.on_messages(messages)

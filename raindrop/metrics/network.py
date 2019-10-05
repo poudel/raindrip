@@ -1,5 +1,5 @@
 import psutil
-from raindrop.metrics.base import MetricCollector
+from metrics.base import MetricCollector
 
 
 class NetworkIO(MetricCollector):

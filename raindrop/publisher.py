@@ -1,12 +1,12 @@
 import json
 import time
 
-from raindrop.config import config
-from raindrop.app import App
-from raindrop.metrics import collect_metrics
+from config import config
+from app import App
+from metrics import collect_metrics
 
 
-def publish_metrics(app):
+def publish(app):
     for metric_value in collect_metrics(app.config.METRICS_MODULES):
         message = {"machine_id": app.config.MACHINE_ID, **metric_value}
         json_message = json.dumps(message)
@@ -15,11 +15,13 @@ def publish_metrics(app):
     app.kafka_producer.flush()
 
 
-def publish_messages(app):
+def main():
+    app = App(config)
+
     while True:
         try:
             app.logger.info("Publishing...")
-            publish_metrics(app)
+            publish(app)
             time.sleep(5)
         except KeyboardInterrupt:
             app.logger.info("Exiting raindrop publisher...")
@@ -27,5 +29,4 @@ def publish_messages(app):
 
 
 if __name__ == "__main__":
-    app = App(config)
-    publish_messages(app)
+    main()
