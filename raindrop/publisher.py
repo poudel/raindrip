@@ -1,9 +1,9 @@
 import json
 import time
 
-from config import config
-from app import App
-from metrics import collect_metrics
+from raindrop.config import config
+from raindrop.app import App
+from raindrop.metrics import collect_metrics
 
 
 def publish(app):
@@ -15,9 +15,7 @@ def publish(app):
     app.kafka_producer.flush()
 
 
-def main():
-    app = App(config)
-
+def main(app):
     while True:
         try:
             app.logger.info("Publishing...")
@@ -29,4 +27,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    app = App(config)
+    main(app)

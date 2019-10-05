@@ -3,7 +3,7 @@ import logging
 from importlib import import_module
 from datetime import datetime
 
-from metrics.base import MetricCollector
+from raindrop.metrics.base import MetricCollector
 
 
 logger = logging.getLogger(__name__)

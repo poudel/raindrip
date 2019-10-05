@@ -1,6 +1,6 @@
 import psutil
 
-from metrics.base import MetricCollector
+from raindrop.metrics.base import MetricCollector
 
 
 class BatterySensor(MetricCollector):

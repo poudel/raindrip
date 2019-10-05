@@ -1,17 +1,16 @@
 import time
-from config import config
-from app import App
-from message_handlers import MessageListener
+from raindrop.config import config
+from raindrop.app import App
+from raindrop.message_handlers import MessageListener
 
 
-def main():
+def main(app):
     """
     Entry point for raindrop consumer app.
 
     This listens to kafka topic for operating system metrics and
     writes them to a PostgreSQL database.
     """
-    app = App(config)
     handler = MessageListener(app)
 
     app.logger.info("Started continuous polling...")
@@ -29,4 +28,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    app = App(config)
+    main(app)
