@@ -19,16 +19,12 @@ def publish_metrics(producer):
     producer.flush()
 
 
-def main():
+def publish_messages():
     while True:
         try:
             print("Collecting...")
-            publish_metrics(kafka.producer)
+            publish_metrics(config, kafka.producer)
             time.sleep(5)
         except KeyboardInterrupt:
             print("Exiting raindrop publisher...")
             break
-
-
-if __name__ == "__main__":
-    main()

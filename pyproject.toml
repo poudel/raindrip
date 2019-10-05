@@ -9,6 +9,7 @@ license = "MIT"
 python = "^3.7"
 psutil = "^5.6"
 kafka-python = "^1.4"
+psycopg2 = "^2.8"
 
 [tool.poetry.dev-dependencies]
 

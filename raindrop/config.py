@@ -10,7 +10,7 @@ def env(name, default=None):
     return value or default
 
 
-class BaseConfig:
+class Config:
     METRICS_MODULES = ["metrics.hardware", "metrics.network", "metrics.system"]
 
     MACHINE_ID = env("RAIN_MACHINE_ID", "random@machine")
@@ -24,5 +24,7 @@ class BaseConfig:
     KAFKA_CLIENT_ID = env("RAIN_KAFKA_CLIENT_ID", "raindrop-client")
     KAFKA_GROUP_ID = env("RAIN_KAFKA_GROUP_ID", "raindrop-group")
 
+    PG_URI = env("RAIN_PG_URI")
 
-config = BaseConfig()
+
+config = Config()
