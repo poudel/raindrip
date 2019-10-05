@@ -1,14 +1,29 @@
+import logging
+
 from importlib import import_module
+from datetime import datetime
+
 from raindrop.metrics.base import MetricCollector
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_metric_collectors(config):
     for module_name in config.metrics_modules:
         import_module(module_name)
 
-    metrics = [
-        metric_class()
-        for metric_class in MetricCollector.__subclasses__()
-        if metric_class.key not in config.disabled_metrics
-    ]
-    return metrics
+    return [collector() for collector in MetricCollector.__subclasses__()]
+
+
+def collect_metrics(config):
+    collectors = get_metric_collectors(config)
+
+    for collector in collectors:
+        try:
+            value = collector.collect()
+        except Exception as err:
+            logger.exception(err)
+            continue
+
+        yield {"key": collector.key, "value": value, "now": datetime.now().isoformat()}

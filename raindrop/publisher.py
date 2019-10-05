@@ -1,49 +1,39 @@
 import json
 import time
 import logging
-from datetime import datetime
+from kafka import KafkaProducer
 
 from raindrop.config import config
-from raindrop.metrics import get_metric_collectors
+from raindrop.metrics import collect_metrics
 
 
 logger = logging.getLogger(__name__)
 
 
-def collect_metrics():
-    metadata = {"machine_id": "random@hostname"}
-
-    collectors = get_metric_collectors(config)
-
-    for collector in collectors:
-        logger.debug("Collecting %s", collector.key)
-
-        try:
-            collected_value = collector.collect()
-        except Exception as err:
-            logger.exception(err)
-            continue
-
-        message = {
-            "key": collector.key,
-            "value": collected_value,
-            "now": datetime.utcnow().isoformat(),
-            **metadata,
-        }
-
-        publish_message(message)
+producer = KafkaProducer(
+    bootstrap_servers=config.kafka_uri,
+    security_protocol="SSL",
+    ssl_cafile=config.kafka_ssl_ca_file,
+    ssl_certfile=config.kafka_ssl_cert_file,
+    ssl_keyfile=config.kafka_ssl_key_file,
+)
 
 
-def publish_message(message):
-    json_message = json.dumps(message)
-    print(json_message)
+def publish_metrics():
+    for metric_value in collect_metrics(config):
+        message = {"machine_id": config.machine_id, **metric_value}
+        json_message = json.dumps(message)
+        producer.send(config.kafka_topic, json_message.encode("utf-8"))
+
+    producer.flush()
 
 
 if __name__ == "__main__":
+
     while True:
         try:
             print("Collecting...")
-            collect_metrics()
+            publish_metrics()
             time.sleep(5)
         except KeyboardInterrupt:
             print("Exiting...")
