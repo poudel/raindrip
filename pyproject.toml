@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "raindrip"
-version = "0.0.1"
+version = "0.0.3"
 description = "Collect various operating system metrics and stream it"
 authors = ["Keshab Paudel"]
 license = "MIT"

@@ -8,8 +8,6 @@ class App:
 
     def __init__(self, config):
         self.config = config
-
-        logging.basicConfig(level=config.LOGLEVEL)
         self.logger = logging.getLogger("raindrip")
 
         self._kafka_producer = None

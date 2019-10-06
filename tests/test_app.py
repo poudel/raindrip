@@ -5,7 +5,7 @@ from raindrip.app import App
 class TestApp(TestCase):
 
     def setUp(self):
-        self.fake_config = mock.MagicMock(LOGLEVEL="INFO")
+        self.fake_config = mock.MagicMock()
 
     @mock.patch("raindrip.app.logging")
     def test__init__(self, logging_mock):

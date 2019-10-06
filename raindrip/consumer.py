@@ -44,7 +44,17 @@ class Consumer:
         Parse the received messages and convert them to parameters for
         the INSERT query.
         """
-        parsed_messages = [json.loads(message.value.decode("utf-8")) for message in messages]
+        parsed_messages = []
+        for message in messages:
+            try:
+                parsed = json.loads(message.value.decode("utf-8"))
+                parsed_messages.append(parsed)
+            except json.JSONDecodeError:
+                self.app.logger.error(
+                    "Error parsing message as json: %s",
+                    message.value,
+                )
+                continue
 
         values = [
             (msg["machine_id"], msg["now"], msg["key"], Json(msg["value"]))

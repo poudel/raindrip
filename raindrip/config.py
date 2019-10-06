@@ -1,5 +1,6 @@
 import os
 from dataclasses import dataclass, fields
+from raindrip.exceptions import ConfigMissing
 
 
 @dataclass
@@ -10,7 +11,6 @@ class Config:
         "raindrip.metrics.system",
     ]
 
-    LOGLEVEL: str
     MACHINE_ID: str
 
     KAFKA_URI: str
@@ -28,11 +28,11 @@ class Config:
     def from_environment(cls, env_var_prefix="RAIN"):
         defaults = {
             "MACHINE_ID": "random@machine",
-            "LOGLEVEL": "INFO",
             "KAFKA_CLIENT_ID": "raindrip-client",
             "KAFKA_GROUP_ID": "raindrip-group",
         }
         values = {}
+        missing = []
 
         for field in fields(cls):
             default = defaults.get(field.name)
@@ -41,7 +41,11 @@ class Config:
             value = os.environ.get(env_var_name, default)
 
             if value is None:
-                raise RuntimeError(f"Environment variable '{env_var_name}' must be provided.")
+                missing.append(env_var_name)
+                continue
 
             values[field.name] = value
+
+        if missing:
+            raise ConfigMissing(missing)
         return cls(**values)
