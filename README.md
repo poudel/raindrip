@@ -37,7 +37,7 @@ export RAIN_KAFKA_SSL_KEYFILE=/path/to/service.key
 # the topic you want to broadcast to
 export RAIN_KAFKA_TOPIC=raindrip
 
-export RAIN_PG_URI=postgres://...
+export RAIN_PG_URI=postgres://user:password@host:port/db?sslmode=required
 ```
 
 
@@ -61,6 +61,31 @@ incoming messages to a pre-defined PostgreSQL database in the table
 ```shell
 raindrip consumer
 ```
+
+Once the consumer starts running, it will decode all incoming metrics
+and save them in the database you specified through `RAIN_PG_URI` in a table called `metrics`.
+
+Connect to the PostgreSQL shell.
+
+```shell
+psql postgres://user:password@host:port/db?sslmode=required
+```
+
+Run the following queries, for example:
+
+Get number of entries
+
+```sql
+SELECT count(*) FROM metrics;
+```
+
+or get number of entries for each metrics
+
+```sql
+SELECT DISTINCT key, COUNT(*) FROM metrics GROUP BY key;
+```
+
+and so on.
 
 # Local development
 
