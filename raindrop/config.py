@@ -1,35 +1,47 @@
 import os
+from dataclasses import dataclass, fields
 
 
-def env(name, default=None):
-    """
-    This function makes sure that we don't load the config unless all
-    required environment variables are provided.
-    """
-    value = os.environ.get(name)
-
-    if value is None and default is None:
-        raise RuntimeError(f"Environment variable '{name}' must be provided.")
-
-    return value or default
-
-
+@dataclass
 class Config:
-    METRICS_MODULES = ["metrics.hardware", "metrics.network", "metrics.system"]
+    METRICS_MODULES = [
+        "raindrop.metrics.hardware",
+        "raindrop.metrics.network",
+        "raindrop.metrics.system",
+    ]
 
-    MACHINE_ID = env("RAIN_MACHINE_ID", "random@machine")
-    LOGLEVEL = env("RAIN_LOGLEVEL", "INFO").upper()
+    LOGLEVEL: str
+    MACHINE_ID: str
 
-    KAFKA_URI = env("RAIN_KAFKA_URI")
-    KAFKA_SSL_CAFILE = env("RAIN_KAFKA_SSL_CAFILE")
-    KAFKA_SSL_CERTFILE = env("RAIN_KAFKA_SSL_CERTFILE")
-    KAFKA_SSL_KEYFILE = env("RAIN_KAFKA_SSL_KEYFILE")
+    KAFKA_URI: str
+    KAFKA_SSL_CAFILE: str
+    KAFKA_SSL_CERTFILE: str
+    KAFKA_SSL_KEYFILE: str
 
-    KAFKA_TOPIC = env("RAIN_KAFKA_TOPIC")
-    KAFKA_CLIENT_ID = env("RAIN_KAFKA_CLIENT_ID", "raindrop-client")
-    KAFKA_GROUP_ID = env("RAIN_KAFKA_GROUP_ID", "raindrop-group")
+    KAFKA_TOPIC: str
+    KAFKA_CLIENT_ID: str
+    KAFKA_GROUP_ID: str
 
-    PG_URI = env("RAIN_PG_URI")
+    PG_URI: str
 
+    @classmethod
+    def from_environment(cls, env_var_prefix="RAIN"):
+        defaults = {
+            "MACHINE_ID": "random@machine",
+            "LOGLEVEL": "INFO",
+            "KAFKA_CLIENT_ID": "raindrop-client",
+            "KAFKA_GROUP_ID": "raindrop-group",
+        }
+        values = {}
 
-config = Config()
+        for field in fields(cls):
+            default = defaults.get(field.name)
+
+            env_var_name = f"{env_var_prefix}_{field.name}"
+            value = os.environ.get(env_var_name, default)
+
+            if value is None:
+                raise RuntimeError(f"Environment variable '{env_var_name}' must be provided.")
+
+            values[field.name] = value
+        return cls(**values)

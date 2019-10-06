@@ -1,6 +1,7 @@
 import logging
 import psycopg2
 from kafka import KafkaProducer, KafkaConsumer
+from raindrop.config import Config
 
 
 class App:
@@ -70,3 +71,8 @@ class App:
         if self._pg_connection:
             self._pg_connection.close()
             self._pg_connection = None
+
+
+def create_app(config=None):
+    config = config or Config.from_environment()
+    return App(config)
