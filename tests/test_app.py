@@ -9,10 +9,8 @@ class TestApp(TestCase):
 
     @mock.patch("raindrip.app.logging")
     def test__init__(self, logging_mock):
-        config = mock.MagicMock(LOGLEVEL="INFOX")
+        config = mock.MagicMock()
         app = App(config)
-
-        logging_mock.basicConfig.assert_called_once_with(level="INFOX")
 
         self.assertIsNotNone(app.logger)
         self.assertIsNotNone(app.config)

@@ -1,5 +1,21 @@
 import json
-from psycopg2.extras import Json, execute_values
+from psycopg2.extras import execute_values
+
+
+SQL_CREATE_METRICS_TABLE = """
+CREATE TABLE IF NOT EXISTS metrics(
+    machine_id text,
+    timestamp timestamptz,
+    key text,
+    value jsonb
+);
+"""
+
+
+SQL_INSERT_INTO_METRICS = """
+INSERT INTO metrics(machine_id, timestamp, key, value)
+VALUES %s
+"""
 
 
 class Consumer:
@@ -12,17 +28,9 @@ class Consumer:
         """
         Create the necessary PostgreSQL table where to save metrics later.
         """
-        query = """
-        CREATE TABLE IF NOT EXISTS metrics(
-            machine_id text,
-            timestamp timestamptz,
-            key text,
-            value jsonb
-        );
-        """
-
-        with self.app.pg_connection.cursor() as cursor:
-            cursor.execute(query)
+        cursor = self.app.pg_connection.cursor()
+        cursor.execute(SQL_CREATE_METRICS_TABLE)
+        cursor.close()
 
         self.app.pg_connection.commit()
 
@@ -31,11 +39,11 @@ class Consumer:
         This method, when called with a list of messages, does a bulk insert into the
         PostgreSQL database.
         """
-        query = "INSERT INTO metrics(machine_id, timestamp, key, value) VALUES %s"
         values = self._prepare_sql_values(messages)
 
-        with self.app.pg_connection.cursor() as cursor:
-            execute_values(cursor, query, values)
+        cursor = self.app.pg_connection.cursor()
+        execute_values(cursor, SQL_INSERT_INTO_METRICS, values)
+        cursor.close()
 
         self.app.pg_connection.commit()
 
@@ -57,7 +65,7 @@ class Consumer:
                 continue
 
         values = [
-            (msg["machine_id"], msg["now"], msg["key"], Json(msg["value"]))
+            (msg["machine_id"], msg["now"], msg["key"], json.dumps(msg["value"]))
             for msg in parsed_messages
         ]
         return values

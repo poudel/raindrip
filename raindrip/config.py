@@ -5,6 +5,7 @@ from raindrip.exceptions import ConfigMissing
 
 @dataclass
 class Config:
+    ENV_VAR_PREFIX = "RAIN"
     METRICS_MODULES = [
         "raindrip.metrics.hardware",
         "raindrip.metrics.network",
@@ -25,7 +26,7 @@ class Config:
     PG_URI: str
 
     @classmethod
-    def from_environment(cls, env_var_prefix="RAIN"):
+    def from_environment(cls):
         defaults = {
             "MACHINE_ID": "random@machine",
             "KAFKA_CLIENT_ID": "raindrip-client",
@@ -37,7 +38,7 @@ class Config:
         for field in fields(cls):
             default = defaults.get(field.name)
 
-            env_var_name = f"{env_var_prefix}_{field.name}"
+            env_var_name = f"{cls.ENV_VAR_PREFIX}_{field.name}"
             value = os.environ.get(env_var_name, default)
 
             if value is None:

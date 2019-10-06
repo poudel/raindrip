@@ -13,9 +13,9 @@ psycopg2 = "^2.8"
 
 [tool.poetry.dev-dependencies]
 
+[tool.poetry.scripts]
+raindrip = "raindrip.cli:main"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
-[tool.poetry.scripts]
-raindrip = "raindrip.cli:main"
