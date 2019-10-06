@@ -1,5 +1,5 @@
 from unittest import TestCase, mock
-from raindrop.app import App
+from raindrip.app import App
 
 
 class TestApp(TestCase):
@@ -7,7 +7,7 @@ class TestApp(TestCase):
     def setUp(self):
         self.fake_config = mock.MagicMock(LOGLEVEL="INFO")
 
-    @mock.patch("raindrop.app.logging")
+    @mock.patch("raindrip.app.logging")
     def test__init__(self, logging_mock):
         config = mock.MagicMock(LOGLEVEL="INFOX")
         app = App(config)
@@ -21,7 +21,7 @@ class TestApp(TestCase):
         self.assertIsNone(app._kafka_producer)
         self.assertIsNone(app._pg_connection)
 
-    @mock.patch("raindrop.app.psycopg2")
+    @mock.patch("raindrip.app.psycopg2")
     def test_pg_connection(self, psycopg2_mock):
         app = App(self.fake_config)
 
@@ -31,7 +31,7 @@ class TestApp(TestCase):
         self.assertEqual(connection, app._pg_connection)
         psycopg2_mock.connect.assert_called_once_with(self.fake_config.PG_URI)
 
-    @mock.patch("raindrop.app.KafkaProducer")
+    @mock.patch("raindrip.app.KafkaProducer")
     def test_kafka_producer(self, producer_mock):
         app = App(self.fake_config)
         producer = app.kafka_producer
@@ -47,7 +47,7 @@ class TestApp(TestCase):
             ssl_keyfile=self.fake_config.KAFKA_SSL_KEYFILE,
         )
 
-    @mock.patch("raindrop.app.KafkaConsumer")
+    @mock.patch("raindrip.app.KafkaConsumer")
     def test_kafka_consumer(self, consumer_mock):
         app = App(self.fake_config)
         consumer = app.kafka_consumer

@@ -1,5 +1,5 @@
 from unittest import TestCase, mock
-from raindrop.config import env
+from raindrip.config import env
 
 
 class TestConfig(TestCase):

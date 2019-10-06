@@ -1,6 +1,6 @@
 import json
 
-from raindrop.metrics import collect_metrics
+from raindrip.metrics import collect_metrics
 
 
 def publish_messages(app):

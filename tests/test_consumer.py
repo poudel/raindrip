@@ -1,5 +1,5 @@
 from unittest import TestCase
-from raindrop.consumer import main
+from raindrip.consumer import main
 
 
 class TestConsumer(TestCase):

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from raindrop.metrics.network import NetworkIO
+from raindrip.metrics.network import NetworkIO
 
 
 class TestNetworkMetrics(TestCase):

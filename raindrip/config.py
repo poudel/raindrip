@@ -5,9 +5,9 @@ from dataclasses import dataclass, fields
 @dataclass
 class Config:
     METRICS_MODULES = [
-        "raindrop.metrics.hardware",
-        "raindrop.metrics.network",
-        "raindrop.metrics.system",
+        "raindrip.metrics.hardware",
+        "raindrip.metrics.network",
+        "raindrip.metrics.system",
     ]
 
     LOGLEVEL: str
@@ -29,8 +29,8 @@ class Config:
         defaults = {
             "MACHINE_ID": "random@machine",
             "LOGLEVEL": "INFO",
-            "KAFKA_CLIENT_ID": "raindrop-client",
-            "KAFKA_GROUP_ID": "raindrop-group",
+            "KAFKA_CLIENT_ID": "raindrip-client",
+            "KAFKA_GROUP_ID": "raindrip-group",
         }
         values = {}
 

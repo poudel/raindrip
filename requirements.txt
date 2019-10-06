@@ -1,3 +1,0 @@
-psutil
-kafka-python
-psycopg2

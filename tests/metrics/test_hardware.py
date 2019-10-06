@@ -1,5 +1,5 @@
 from unittest import TestCase
-from raindrop.metrics.hardware import BatterySensor, VirtualMemory, SwapMemory
+from raindrip.metrics.hardware import BatterySensor, VirtualMemory, SwapMemory
 
 
 class TestHardwareMetrics(TestCase):

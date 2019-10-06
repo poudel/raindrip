@@ -1,4 +1,13 @@
-# Introduction
+# Raindrip
+
+
+# Quick start
+
+The easiest way would be to install it from pypi.
+
+```shell
+pip install raindrip
+```
 
 
 ## Requirements
@@ -36,39 +45,39 @@ Note: Please make sure there is `export PYTHONPATH=.` in `environ.sh`.
 
 ## Publisher
 
-Raindrop publisher collects various metrics about your operating
+Raindrip publisher collects various metrics about your operating
 system and streams it to a Kafka queue as events. To run the publisher:
 
 ```shell
-python raindrop/publisher.py
+python raindrip/publisher.py
 ```
 
 ## Consumer
 
-Raindrop consumer listens to the defined kafka topic and writes
+Raindrip consumer listens to the defined kafka topic and writes
 incoming messages to a pre-defined PostgreSQL database in the table
 `metrics`. To run the consume:
 
 
 ```shell
-python raindrop/consumer.py
+python raindrip/consumer.py
 ```
 
 ## Metrics
 
 Metrics are collected by classes called metric collectors. These
-classes are inside `raindrop.metrics` module at the moment.
+classes are inside `raindrip.metrics` module at the moment.
 
 A metric collector class should subclass
-`raindrop.metrics.base.MetricCollector` class and define a class variable
+`raindrip.metrics.base.MetricCollector` class and define a class variable
 `key`. The `key` should be a unique name for the metric. 
 
 ### Adding a new metric
 
-Adding a metric is as simple as subclassing `raindrop.metrics.base.MetricCollector` like this:
+Adding a metric is as simple as subclassing `raindrip.metrics.base.MetricCollector` like this:
 
 ```python
-from raindrop.metrics.base import MetricCollector
+from raindrip.metrics.base import MetricCollector
 
 class MyMetric(MetricCollector):
     key = "my_metric"

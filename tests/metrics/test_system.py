@@ -1,5 +1,5 @@
 from unittest import TestCase
-from raindrop.metrics.system import BootTime, NumProcesses, NumUsers
+from raindrip.metrics.system import BootTime, NumProcesses, NumUsers
 
 
 class TestSystemMetrics(TestCase):

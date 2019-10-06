@@ -2,7 +2,7 @@ from datetime import datetime
 
 import psutil
 
-from raindrop.metrics.base import MetricCollector
+from raindrip.metrics.base import MetricCollector
 
 
 class BootTime(MetricCollector):

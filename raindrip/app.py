@@ -1,7 +1,7 @@
 import logging
 import psycopg2
 from kafka import KafkaProducer, KafkaConsumer
-from raindrop.config import Config
+from raindrip.config import Config
 
 
 class App:
@@ -10,7 +10,7 @@ class App:
         self.config = config
 
         logging.basicConfig(level=config.LOGLEVEL)
-        self.logger = logging.getLogger("raindrop")
+        self.logger = logging.getLogger("raindrip")
 
         self._kafka_producer = None
         self._kafka_consumer = None

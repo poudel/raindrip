@@ -4,9 +4,9 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from raindrop.app import create_app
-from raindrop.consumer import consume_messages
-from raindrop.publisher import publish_messages
+from raindrip.app import create_app
+from raindrip.consumer import consume_messages
+from raindrip.publisher import publish_messages
 
 
 def main():
@@ -26,7 +26,7 @@ def main():
         sys.exit(1)
 
     app.logger.info(f"Starting {command}")
-    exit_status = 0
+    exit_code = 0
 
     while True:
         try:
@@ -38,12 +38,12 @@ def main():
         except Exception as err:
             app.logger.exception(err)
             app.logger.error("Abruptly stopping {command}")
-            exit_status = 1
+            exit_code = 1
 
     # cleanup any open connection
     app.logger.info("Cleaning up..")
     app.cleanup()
-    sys.exit(exit_status)
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
