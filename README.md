@@ -87,6 +87,27 @@ SELECT DISTINCT key, COUNT(*) FROM metrics GROUP BY key;
 
 and so on.
 
+## `raindrip --help`
+
+```
+usage: raindrip [-h] [-f FREQUENCY] [-l {DEBUG,INFO,WARNING,ERROR}]
+                {consumer,publisher}
+
+Raindrip: stream OS metrics using Kafka and write them to a PostgreSQL
+database.
+
+positional arguments:
+  {consumer,publisher}
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FREQUENCY, --frequency FREQUENCY
+                        Streaming or Polling frequency in seconds. Applies to
+                        both commands.
+  -l {DEBUG,INFO,WARNING,ERROR}, --loglevel {DEBUG,INFO,WARNING,ERROR}
+                        Loglevel for verbosity. Default is INFO.
+```
+
 # Local development
 
 Clone the repository and go inside the `raindrip` directory.
@@ -118,9 +139,23 @@ dependencies there. Any command that you need to run should be run like this:
 poetry run <command> arg1...argN
 ```
 
+The entrypoint is the `cli.py` file. To run the consumer cli:
+
+```shell
+poetry run python raindrip/cli.py consumer
+```
+
+and to run the publisher:
+
+
+```shell
+poetry run python raindrip/cli.py publisher
+```
+
+
 ## Configuration
 
-Configuration, again, are done via environment variables. Read the
+Configuration, again, is done via environment variables. Read the
 section above.
 
 
